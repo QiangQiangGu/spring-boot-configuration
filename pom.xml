@@ -10,6 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>keypair-spring-boot-configuration</module>
+        <module>redis-spring-boot-configuration</module>
     </modules>
 
     <parent>
@@ -27,5 +28,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
 </project>

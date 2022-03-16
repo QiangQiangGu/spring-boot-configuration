@@ -2,18 +2,13 @@ package com.joe.boot.keypair.configuration.config;
 
 import com.joe.boot.keypair.configuration.properties.KeyPairProperties;
 import com.joe.boot.keypair.configuration.provider.token.store.KeyStoreKeyFactory;
-import lombok.Data;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.jwt.crypto.sign.RsaSigner;
 import org.springframework.security.jwt.crypto.sign.RsaVerifier;
-import org.springframework.security.jwt.crypto.sign.SignatureVerifier;
 import org.springframework.security.jwt.crypto.sign.Signer;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.Objects;
 
 /**
  * @author QiangQiang Gu
@@ -99,11 +94,11 @@ public class KeyPair {
         this.keyPair = keyPair;
     }
 
-    private void setRsaSigner(Signer rsaSigner) {
+    private void setRsaSigner(RsaSigner rsaSigner) {
         this.rsaSigner = rsaSigner;
     }
 
-    private void setRsaVerifier(SignatureVerifier rsaVerifier) {
+    private void setRsaVerifier(RsaVerifier rsaVerifier) {
         this.rsaVerifier = rsaVerifier;
     }
 
@@ -114,28 +109,28 @@ public class KeyPair {
         keystoreName = properties.getKeystoreName();
         KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource(keystoreName), keyStorePassword.toCharArray());
         keyPair = keyStoreKeyFactory.getKeyPair(keyAlias, keyPassword.toCharArray());
-        privateKey = keyPair.getPrivate();
-        publicKey = keyPair.getPublic();
-        rsaSigner = new RsaSigner(((RSAPrivateKey) privateKey));
-        rsaVerifier = new RsaVerifier(((RSAPublicKey) publicKey));
+        privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        publicKey = (RSAPublicKey) keyPair.getPublic();
+        rsaSigner = new RsaSigner(privateKey);
+        rsaVerifier = new RsaVerifier(publicKey);
     }
 
     private java.security.KeyPair keyPair;
 
-    private PrivateKey privateKey;
+    private RSAPrivateKey privateKey;
 
-    private PublicKey publicKey;
+    private RSAPublicKey publicKey;
 
-    private Signer rsaSigner;
+    private RsaSigner rsaSigner;
 
-    private SignatureVerifier rsaVerifier;
+    private RsaVerifier rsaVerifier;
 
     /**
      * 签名KEY
      *
      * @return RSAPrivateKey
      */
-    public PrivateKey getSignerKey() {
+    public RSAPrivateKey getPrivateKey() {
         return privateKey;
     }
 
@@ -144,7 +139,7 @@ public class KeyPair {
      *
      * @return RSAPublicKey
      */
-    public PublicKey getVerifierKey() {
+    public RSAPublicKey getPublicKey() {
         return publicKey;
     }
 
@@ -167,7 +162,7 @@ public class KeyPair {
      *
      * @return KeyPair
      */
-    public SignatureVerifier getRsaVerifier() {
+    public RsaVerifier getRsaVerifier() {
         return rsaVerifier;
     }
 

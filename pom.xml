@@ -11,7 +11,9 @@
     <modules>
         <module>keypair-spring-boot-configuration</module>
         <module>redis-spring-boot-configuration</module>
+        <module>test-spring-boot-configuration</module>
         <module>xxljob-spring-boot-configuration</module>
+        <module>minio-spring-boot-configuration</module>
     </modules>
 
     <parent>
@@ -20,12 +22,31 @@
         <version>2.2.2.RELEASE</version>
     </parent>
 
+    <properties>
+        <project.version>1.0-SNAPSHOT</project.version>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-jwt</artifactId>
                 <version>1.0.10.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>2.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>5.4.4</version>
+            </dependency>
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>7.1.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

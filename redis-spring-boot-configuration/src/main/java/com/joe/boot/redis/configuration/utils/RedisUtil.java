@@ -352,14 +352,14 @@ public class RedisUtil {
      * 根据key获取Set中的所有值
      *
      * @param key 键
-     * @return
+     * @return Set<Object>
      */
     public Set<Object> sGet(String key) {
         try {
             return redisTemplate.opsForSet().members(key);
         } catch (Exception e) {
             log.error(key, e);
-            return null;
+            return Collections.emptySet();
         }
     }
 
@@ -467,7 +467,7 @@ public class RedisUtil {
      * @param value 值
      * @return true 存在 false不存在
      */
-    public boolean zSHasKey(String key, Object value) {
+    public Boolean zSHasKey(String key, Object value) {
         try {
             return redisTemplate.opsForSet().isMember(key, value);
         } catch (Exception e) {

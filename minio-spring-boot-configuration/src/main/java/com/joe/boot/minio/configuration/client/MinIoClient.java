@@ -2,6 +2,7 @@ package com.joe.boot.minio.configuration.client;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileTypeUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
@@ -21,6 +22,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
+ * TODO 根据shardingsphere分片特性去做对应的数据存储
+ *
  * @author Administrator
  */
 @Slf4j
@@ -50,6 +53,8 @@ public class MinIoClient {
     public MinIoClient(MinIoProperties minIoProperties) {
         String bucketName = minIoProperties.getBucketName();
         String nodes = minIoProperties.getBucketNodes();
+        Assert.notEmpty(bucketName,"minIo bucketName not config!!!");
+        Assert.notEmpty(nodes,"minIo nodes not config!!!");
         List<String> nodeList = StrUtil.split(nodes, '-');
         this.minioClient = MinioClient.builder()
                 .endpoint(minIoProperties.getEndpoint(), minIoProperties.getPort(), false)
@@ -125,7 +130,20 @@ public class MinIoClient {
                 .contentType(contentType)
                 .build();
         minioClient.putObject(putObjectArgs);
+        return getObjectUrl(bucketName, objectName);
+    }
+
+    private String getObjectUrl(String bucketName, String objectName) throws IOException, InvalidKeyException, InvalidResponseException, InsufficientDataException, NoSuchAlgorithmException, ServerException, InternalException, XmlParserException, InvalidBucketNameException, ErrorResponseException {
         return minioClient.getObjectUrl(bucketName, objectName);
+    }
+
+    public String getObjectFileUrl(String bucketName, String objectName) {
+        try {
+            return getObjectUrl(bucketName, objectName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

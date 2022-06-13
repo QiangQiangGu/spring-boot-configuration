@@ -146,8 +146,14 @@ public class RedisUtil {
      * @param value 值
      * @return true成功 false失败
      */
-    public void set(String key, Object value) {
-        redisTemplate.opsForValue().set(key, value);
+    public boolean set(String key, Object value) {
+        try {
+            redisTemplate.opsForValue().set(key, value);
+            return true;
+        } catch (Exception e) {
+            log.error(key, e.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -159,15 +165,28 @@ public class RedisUtil {
      * @return true成功 false 失败
      */
     public boolean set(String key, Object value, long time) {
+        return set(key, value, time, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 普通缓存放入并设置时间
+     *
+     * @param key      键
+     * @param value    值
+     * @param time     时间 time要大于0 如果time小于等于0 将设置无限期
+     * @param timeUnit 单位
+     * @return true成功 false 失败
+     */
+    public boolean set(String key, Object value, long time, TimeUnit timeUnit) {
         try {
             if (time > 0) {
-                redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
+                redisTemplate.opsForValue().set(key, value, time, timeUnit);
             } else {
-                set(key, value);
+                return set(key, value);
             }
             return true;
         } catch (Exception e) {
-            log.error(key, e);
+            log.error(key, e.getMessage());
             return false;
         }
     }
@@ -181,7 +200,7 @@ public class RedisUtil {
      */
     public Long incr(String key, long delta) {
         if (delta < 0) {
-            throw new RuntimeException("递增因子必须大于0");
+            throw new IllegalArgumentException("递增因子必须大于0");
         }
         return redisTemplate.opsForValue().increment(key, delta);
     }
@@ -195,7 +214,7 @@ public class RedisUtil {
      */
     public Long decr(String key, long delta) {
         if (delta < 0) {
-            throw new RuntimeException("递减因子必须大于0");
+            throw new IllegalArgumentException("递减因子必须大于0");
         }
         return redisTemplate.opsForValue().increment(key, -delta);
     }
@@ -328,7 +347,7 @@ public class RedisUtil {
      * @param key  键
      * @param item 项
      * @param by   要增加几(大于0)
-     * @return
+     * @return double
      */
     public double hincr(String key, String item, double by) {
         return redisTemplate.opsForHash().increment(key, item, by);

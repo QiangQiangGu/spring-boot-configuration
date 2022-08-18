@@ -383,6 +383,37 @@ public class RedisUtil {
     }
 
     /**
+     * 随机移除一个value in key set
+     *
+     * @param key 键
+     * @return Object
+     */
+    public Object sPop(String key) {
+        try {
+            return redisTemplate.opsForSet().pop(key);
+        } catch (Exception e) {
+            log.error(key, e);
+        }
+        return null;
+    }
+
+    /**
+     * 随机移除count个value in key set
+     *
+     * @param key   键
+     * @param count 移除数量
+     * @return List<Object>
+     */
+    public List<Object> sPop(String key, Long count) {
+        try {
+            return redisTemplate.opsForSet().pop(key, count);
+        } catch (Exception e) {
+            log.error(key, e);
+            return Collections.emptyList();
+        }
+    }
+
+    /**
      * 根据value从一个set中查询,是否存在
      *
      * @param key   键
@@ -564,15 +595,14 @@ public class RedisUtil {
      * @param key   键
      * @param start 开始 0 是第一个元素
      * @param end   结束 -1代表所有值
-     * @return
-     * @取出来的元素 总数 end-start+1
+     * @return list context
      */
     public List<Object> lGet(String key, long start, long end) {
         try {
             return redisTemplate.opsForList().range(key, start, end);
         } catch (Exception e) {
             log.error(key, e);
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -580,14 +610,14 @@ public class RedisUtil {
      * 获取list缓存的长度
      *
      * @param key 键
-     * @return
+     * @return length
      */
-    public long lGetListSize(String key) {
+    public Long lGetListSize(String key) {
         try {
             return redisTemplate.opsForList().size(key);
         } catch (Exception e) {
             log.error(key, e);
-            return 0;
+            return 0L;
         }
     }
 

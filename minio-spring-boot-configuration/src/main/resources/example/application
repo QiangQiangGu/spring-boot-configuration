@@ -1,0 +1,7 @@
+minio:
+  endpoint: CentOS7-16G
+  port: 9000
+  accessKey: minioadmin
+  secretKey: minioadmin
+  bucket-name: test
+  bucket-nodes: 0-9
